@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Spanish Learning Adventure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #e0f7fa;
+        }
+        #main-container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+        }
+        #game-info p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        #game-area {
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 1em;
+            background-color: #00796b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #004d40;
+        }
+        .game-option {
+            display: block;
+            padding: 10px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .game-option:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Ultimate Spanish Learning Adventure!</h1>
+        <div id="game-info">
+            <p>Level: <span id="level-display">1</span></p>
+            <p>Score: <span id="score-display">0</span></p>
+            <p>Daily Streak: <span id="streak-display">0</span></p>
+        </div>
+        <div id="game-area">
+            <h2 id="game-title">Select a Game Mode to Start!</h2>
+            <div id="game-content">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+        <button onclick="startGame()">Start New Game</button>
+    </div>
+    <script>
+        let level = 1;
+        let score = 0;
+        let dailyStreak = 0;
+
+        const wordPairs = [
+            { spanish: "Perro", english: "Dog" },
+            { spanish: "Gato", english: "Cat" },
+            { spanish: "Casa", english: "House" },
+            { spanish: "Comida", english: "Food" },
+            { spanish: "Agua", english: "Water" },
+            { spanish: "Libro", english: "Book" },
+            { spanish: "Escuela", english: "School" },
+            { spanish: "Familia", english: "Family" },
+            { spanish: "Trabajo", english: "Work" },
+            { spanish: "Amigo", english: "Friend" }
+        ];
+
+        const gameModes = {
+            vocabMatch: startVocabMatch,
+            sentenceBuilder: startSentenceBuilder,
+            typingChallenge: startTypingChallenge
+        };
+
+        function startGame() {
+            updateUI();
+            const gameType = chooseGameType();
+            gameModes[gameType]();
+        }
+
+        function updateUI() {
+            document.getElementById("level-display").textContent = level;
+            document.getElementById("score-display").textContent = score;
+            document.getElementById("streak-display").textContent = dailyStreak;
+        }
+
+        function chooseGameType() {
+            const modes = Object.keys(gameModes);
+            return modes[Math.floor(Math.random() * modes.length)];
+        }
+
+        function handleAnswer(isCorrect) {
+            if (isCorrect) {
+                score += 10;
+                if (score >= 50) {
+                    level++;
+                    score = 0;
+                    dailyStreak++;
+                    alert(`Congratulations! You've reached Level ${level}!`);
+                }
+            } else {
+                alert("Incorrect. Try again!");
+                if (score > 0) score -= 5;
+            }
+            updateUI();
+            startGame();
+        }
+
+        function startVocabMatch() {
+            document.getElementById("game-title").textContent = "Vocabulary Match";
+            const container = document.getElementById("game-content");
+            container.innerHTML = "";
+            const shuffledPairs = [...wordPairs].sort(() => 0.5 - Math.random());
+
+            shuffledPairs.forEach(pair => {
+                const option = document.createElement("span");
+                option.textContent = `${pair.spanish} - ${pair.english}`;
+                option.className = "game-option";
+                option.onclick = () => handleAnswer(true);
+                container.appendChild(option);
+            });
+        }
+
+        function startSentenceBuilder() {
+            document.getElementById("game-title").textContent = "Sentence Builder";
+            const sentence = "La casa es grande";
+            const words = sentence.split(" ").sort(() => 0.5 - Math.random());
+
+            const container = document.getElementById("game-content");
+            container.innerHTML = "";
+            words.forEach(word => {
+                const button = document.createElement("button");
+                button.textContent = word;
+                button.className = "game-option";
+                button.onclick = () => handleAnswer(true);
+                container.appendChild(button);
+            });
+        }
+
+        function startTypingChallenge() {
+            document.getElementById("game-title").textContent = "Typing Challenge";
+            const targetWord = wordPairs[Math.floor(Math.random() * wordPairs.length)];
+            const container = document.getElementById("game-content");
+            container.innerHTML = `<p>Type the Spanish word for '${targetWord.english}':</p><input id="typing-input" type="text"><button onclick="checkTypingAnswer('${targetWord.spanish}')">Submit</button>`;
+        }
+
+        function checkTypingAnswer(correctAnswer) {
+            const userAnswer = document.getElementById("typing-input").value.trim();
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                handleAnswer(true);
+            } else {
+                handleAnswer(false);
+            }
+        }
+    </script>
+</body>
+</html>
