@@ -1,184 +1,247 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Spanish Learning Adventure</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-            background-color: #e0f7fa;
-        }
-        #main-container {
-            text-align: center;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 500px;
-        }
-        #game-info p {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        #game-area {
-            margin-top: 20px;
-        }
-        button {
-            padding: 12px 20px;
-            font-size: 1em;
-            background-color: #00796b;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #004d40;
-        }
-        .game-option {
-            display: block;
-            padding: 10px;
-            margin: 5px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .game-option:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>AI Learning Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
 </head>
 <body>
-    <div id="main-container">
-        <h1>Ultimate Spanish Learning Adventure!</h1>
-        <div id="game-info">
-            <p>Level: <span id="level-display">1</span></p>
-            <p>Score: <span id="score-display">0</span></p>
-            <p>Daily Streak: <span id="streak-display">0</span></p>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Ask the AI Anything</h1>
+        <textarea id="userInput" placeholder="What do you want to learn?"></textarea>
+        <br>
+        <div class="button-container">
+            <button class="btn-primary" onclick="generateResponse('article')">Generate Article</button>
+            <button class="btn-secondary" onclick="generateResponse('chat')">Chat with AI</button>
+            <button class="btn-clear" onclick="clearInput()">Clear</button>
         </div>
-        <div id="game-area">
-            <h2 id="game-title">Select a Game Mode to Start!</h2>
-            <div id="game-content">
-                <!-- Dynamic content will be loaded here -->
-            </div>
-        </div>
-        <button onclick="startGame()">Start New Game</button>
+        <div id="response" class="response-box"></div>
     </div>
-    <script>
-        let level = 1;
-        let score = 0;
-        let dailyStreak = 0;
-
-        const wordPairs = [
-            { spanish: "Perro", english: "Dog" },
-            { spanish: "Gato", english: "Cat" },
-            { spanish: "Casa", english: "House" },
-            { spanish: "Comida", english: "Food" },
-            { spanish: "Agua", english: "Water" },
-            { spanish: "Libro", english: "Book" },
-            { spanish: "Escuela", english: "School" },
-            { spanish: "Familia", english: "Family" },
-            { spanish: "Trabajo", english: "Work" },
-            { spanish: "Amigo", english: "Friend" }
-        ];
-
-        const gameModes = {
-            vocabMatch: startVocabMatch,
-            sentenceBuilder: startSentenceBuilder,
-            typingChallenge: startTypingChallenge
-        };
-
-        function startGame() {
-            updateUI();
-            const gameType = chooseGameType();
-            gameModes[gameType]();
-        }
-
-        function updateUI() {
-            document.getElementById("level-display").textContent = level;
-            document.getElementById("score-display").textContent = score;
-            document.getElementById("streak-display").textContent = dailyStreak;
-        }
-
-        function chooseGameType() {
-            const modes = Object.keys(gameModes);
-            return modes[Math.floor(Math.random() * modes.length)];
-        }
-
-        function handleAnswer(isCorrect) {
-            if (isCorrect) {
-                score += 10;
-                if (score >= 50) {
-                    level++;
-                    score = 0;
-                    dailyStreak++;
-                    alert(`Congratulations! You've reached Level ${level}!`);
-                }
-            } else {
-                alert("Incorrect. Try again!");
-                if (score > 0) score -= 5;
-            }
-            updateUI();
-            startGame();
-        }
-
-        function startVocabMatch() {
-            document.getElementById("game-title").textContent = "Vocabulary Match";
-            const container = document.getElementById("game-content");
-            container.innerHTML = "";
-            const shuffledPairs = [...wordPairs].sort(() => 0.5 - Math.random());
-
-            shuffledPairs.forEach(pair => {
-                const option = document.createElement("span");
-                option.textContent = `${pair.spanish} - ${pair.english}`;
-                option.className = "game-option";
-                option.onclick = () => handleAnswer(true);
-                container.appendChild(option);
-            });
-        }
-
-        function startSentenceBuilder() {
-            document.getElementById("game-title").textContent = "Sentence Builder";
-            const sentence = "La casa es grande";
-            const words = sentence.split(" ").sort(() => 0.5 - Math.random());
-
-            const container = document.getElementById("game-content");
-            container.innerHTML = "";
-            words.forEach(word => {
-                const button = document.createElement("button");
-                button.textContent = word;
-                button.className = "game-option";
-                button.onclick = () => handleAnswer(true);
-                container.appendChild(button);
-            });
-        }
-
-        function startTypingChallenge() {
-            document.getElementById("game-title").textContent = "Typing Challenge";
-            const targetWord = wordPairs[Math.floor(Math.random() * wordPairs.length)];
-            const container = document.getElementById("game-content");
-            container.innerHTML = `<p>Type the Spanish word for '${targetWord.english}':</p><input id="typing-input" type="text"><button onclick="checkTypingAnswer('${targetWord.spanish}')">Submit</button>`;
-        }
-
-        function checkTypingAnswer(correctAnswer) {
-            const userAnswer = document.getElementById("typing-input").value.trim();
-            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-                handleAnswer(true);
-            } else {
-                handleAnswer(false);
-            }
-        }
-    </script>
+    <footer>
+        <p>&copy; 2024 AI Learning Hub. All Rights Reserved.</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
+
+/* styles.css */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    text-align: center;
+    padding-top: 50px;
+    margin: 0;
+}
+header {
+    background-color: #00796b;
+    padding: 15px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+nav ul li {
+    margin: 0 15px;
+}
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+nav ul li a:hover {
+    color: #c5e1a5;
+}
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 100px auto 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.4);
+}
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    margin-bottom: 15px;
+    transition: box-shadow 0.3s;
+}
+textarea:focus {
+    box-shadow: 0px 0px 15px rgba(0, 150, 136, 0.5);
+    outline: none;
+}
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+button {
+    margin-top: 10px;
+    padding: 15px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+}
+button:hover {
+    transform: translateY(-3px);
+}
+.btn-primary {
+    background: linear-gradient(to right, #43cea2, #185a9d);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #004d40;
+}
+.btn-secondary {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #01579b;
+}
+.btn-clear {
+    background: linear-gradient(to right, #ff512f, #dd2476);
+    color: white;
+}
+.btn-clear:hover {
+    background-color: #b71c1c;
+}
+.response-box {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    border: 1px solid #c5e1a5;
+    text-align: left;
+    white-space: pre-wrap;
+    max-height: 300px;
+    overflow-y: auto;
+    color: #e0f7fa;
+}
+footer {
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #004d40;
+    color: #fff;
+    text-align: center;
+}
+
+/* script.js */
+async function generateResponse(type) {
+    const userInput = document.getElementById("userInput").value.trim();
+    if (!userInput) {
+        alert("Please enter a question or topic.");
+        return;
+    }
+    
+    const responseElement = document.getElementById("response");
+    responseElement.innerHTML = "<i>Loading...</i>";
+
+    try {
+        const response = await fetch('http://localhost:3000/ask', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                prompt: userInput,
+                type: type
+            }),
+        });
+        const data = await response.json();
+        if (data.reply) {
+            responseElement.innerHTML = `<strong>AI Response:</strong><br>${data.reply}`;
+        } else {
+            responseElement.innerHTML = "Sorry, I couldn't generate a response.";
+        }
+    } catch (error) {
+        responseElement.innerHTML = "An error occurred: " + error;
+    }
+}
+
+function clearInput() {
+    document.getElementById("userInput").value = "";
+    document.getElementById("response").innerHTML = "";
+}
+
+/* Node.js backend (app.js) */
+const express = require('express');
+const fetch = require('node-fetch');
+require('dotenv').config();
+
+const app = express();
+const PORT = 3000;
+app.use(express.json());
+
+app.post('/ask', async (req, res) => {
+    const { prompt, type } = req.body;
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+        return res.status(500).json({ error: "API key is missing" });
+    }
+
+    try {
+        const response = await fetch('https://api.openai.com/v1/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify({
+                model: 'text-davinci-003',
+                prompt: prompt,
+                max_tokens: type === 'article' ? 500 : 150,
+                temperature: 0.7,
+                top_p: 1,
+                frequency_penalty: 0.5,
+                presence_penalty: 0.6
+            }),
+        });
+        const data = await response.json();
+        if (data.choices && data.choices.length > 0) {
+            res.json({ reply: data.choices[0].text.trim() });
+        } else {
+            res.status(500).json({ error: "No response from AI" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching data from AI API" });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+/* .env file (not included in the code) */
+OPENAI_API_KEY=your_openai_api_key_here
